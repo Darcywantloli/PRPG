@@ -1,21 +1,38 @@
-module PRPG_tb;
-reg rst;      //reset
-wire [3:1] out; //3-bit output
+`timescale 1ns/1ps
+module Pseudo_Random_Pattern_Generator_tb;
+reg clk_tb;
+reg Load_tb;
+reg Din_tb;
 
-//----- clock產生器 -----
-reg clk = 1'b0;         //設clock初值為1
-always #5 clk = !clk;   //每隔5個單位時間就變換
-
-initial begin
-    #0  rst=1'b1;
-    #14 rst=1'b0;
-    #195 $finish;
+initial
+begin
+    clk_tb = 0;
+    Din_tb = 4;
+    Load_tb = 1'b0;
 end
 
-PRPG PRPG_tb(.clk(clk), .rst(rst), .out(out));
-
-initial begin
-    $dumpfile("PRPG.vcd");
-    $dumpvars(0, PRPG_tb);
+always
+begin
+    #10 clk_tb = ~clk_tb;
 end
+
+initial
+begin
+    #30 Load_tb = 1'b0;
+    #80 Load_tb = 1'b1;
+    #5 Load_tb = 1'b0;
+    #250 $finish;
+end
+
+initial
+begin
+    $dumpfile("Pseudo_Random_Pattern_Generator.vcd");
+    $dumpvars(0, Pseudo_Random_Pattern_Generator_tb);
+end
+
+Pseudo_Random_Pattern_Generator Pseudo_Random_Pattern_Generator_tb
+(
+    .clk(clk_tb),
+    .Load(Load_tb)
+);
 endmodule
